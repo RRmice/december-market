@@ -47,13 +47,17 @@ VALUES
 
 INSERT INTO users (phone, password, first_name, last_name, email)
 VALUES
-('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com');
+('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com'),
+('22222222','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin1','Admin1','admin1@gmail.com');
 
 INSERT INTO users_roles (user_id, role_id)
 VALUES
 (1, 1),
 (1, 2),
-(1, 3);
+(1, 3),
+(2, 1),
+(2, 2),
+(2, 3);
 
 drop table if exists orders cascade;
 create table orders (id bigserial, user_id bigint, price numeric(8, 2), primary key(id), constraint fk_user_id foreign key (user_id) references users (id));

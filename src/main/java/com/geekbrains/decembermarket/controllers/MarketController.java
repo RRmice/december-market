@@ -10,6 +10,7 @@ import com.geekbrains.decembermarket.services.ProductService;
 import com.geekbrains.decembermarket.services.UserService;
 import com.geekbrains.decembermarket.utils.Cart;
 import com.geekbrains.decembermarket.utils.ProductFilter;
+import net.bytebuddy.asm.Advice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -101,10 +102,19 @@ public class MarketController {
     }
 
     @GetMapping("/orders/create")
+    @ResponseBody
     public String createOrder(Principal principal) {
+
+        return "ok";
+
+    }
+
+    @GetMapping("/orders/create/confirm")
+    public String createConfirmOrder(Principal principal) {
         User user = userService.findByPhone(principal.getName());
         Order order = new Order(user, cart);
         orderService.save(order);
         return "redirect:/";
     }
+
 }
