@@ -46,12 +46,13 @@
 
                 <div class="user_phone">
                     <label th:text="#{nav.login.field}" />
-                    <input th:value="${phone}" type="text">
+                    <input th:value="${phone}" name="phone" type="text">
                 </div>
 
                 <div class="delivery_address">
                     <label th:text="#{order.delivery_address}" />
-                    <input type="text">
+                    <input type="text" name="delivery">
+
                 </div>
 
                 <button class="btn btn-primary btn-block" type="submit" th:text="#{order.confirm}"/>

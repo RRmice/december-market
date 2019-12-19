@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -111,9 +112,12 @@ public class MarketController {
     }
 
     @PostMapping("/orders/create/confirm")
-    public String createConfirmOrder(Principal principal, @RequestParam Map<String, String> params) {
+    public String createConfirmOrder(Principal principal, Model model,
+                                        @RequestParam Map<String, String> params) {
 
-        System.out.println(params.size());
+       if (params.get("phone").isEmpty() || params.get("delivery").isEmpty()){
+           return "redirect:/orders/create";
+       }
 
         User user = userService.findByPhone(principal.getName());
         Order order = new Order(user, cart);
