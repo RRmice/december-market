@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -102,15 +103,18 @@ public class MarketController {
     }
 
     @GetMapping("/orders/create")
-    @ResponseBody
-    public String createOrder(Principal principal) {
-
-        return "ok";
-
+    public String createOrder(Principal principal, Model model) {
+        User user = userService.findByPhone(principal.getName());
+        model.addAttribute("cart", cart);
+        model.addAttribute("phone", user.getPhone());
+        return "order_page";
     }
 
-    @GetMapping("/orders/create/confirm")
-    public String createConfirmOrder(Principal principal) {
+    @PostMapping("/orders/create/confirm")
+    public String createConfirmOrder(Principal principal, @RequestParam Map<String, String> params) {
+
+        System.out.println(params.size());
+
         User user = userService.findByPhone(principal.getName());
         Order order = new Order(user, cart);
         orderService.save(order);

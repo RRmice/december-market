@@ -34,7 +34,7 @@
             </tr>
             </tbody>
         </table>
-        <span th:text="'Общая стоимость: ' + ${cart.price}" />
+        <span th:text="#{order.total} + ' ' + ${cart.price}" />
         <br>
         <a class="btn btn-primary" th:href="@{/orders/create}" >Оформить заказ</a>
     </div>

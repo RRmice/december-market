@@ -1,10 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8"/>
+    <title>December Market</title>
+    <link rel="stylesheet" th:href="@{../static/css/stylesheet.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </head>
+
 <body>
+    <div class="container">
+        <div th:replace="~{navigation :: navigation(Cart)}"/>
+
+        <h4 th:text="#{order.page.head}"></h4>
+        <br>
+
+        <div th:if="${cart.items.size() > 0}">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Название товара</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cart.items}">
+                    <td th:text="${item.product.title}"/>
+                    <td th:text="${item.quantity}"/>
+                    <td th:text="${item.price}"/>
+                </tr>
+                </tbody>
+            </table>
+            <span th:text="#{order.total} + ' ' + ${cart.price}" />
+            <br>
+        </div>
+
+        <br>
+
+        <div>
+
+            <form th:action="@{/orders/create/confirm}" method="POST">
+
+                <div class="user_phone">
+                    <label th:text="#{nav.login.field}" />
+                    <input th:value="${phone}" type="text">
+                </div>
+
+                <div class="delivery_address">
+                    <label th:text="#{order.delivery_address}" />
+                    <input type="text">
+                </div>
+
+                <button class="btn btn-primary btn-block" type="submit" th:text="#{order.confirm}"/>
+            </form>
+
+
+
+        </div>
+
+
+    </div>
+
 
 </body>
 </html>
