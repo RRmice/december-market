@@ -1,4 +1,4 @@
-package com.geekbrains.decembermarket.utils;
+package com.geekbrains.decembermarket.beans;
 
 import com.geekbrains.decembermarket.entites.OrderItem;
 import com.geekbrains.decembermarket.entites.Product;
@@ -43,9 +43,9 @@ public class Cart {
         recalculate();
     }
 
-    public void removeById(Long productId) {
+    public void removeByProductId(Long productId) {
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getId().equals(productId)) {
+            if (items.get(i).getProduct().getId().equals(productId)) {
                 items.remove(i);
                 recalculate();
                 return;

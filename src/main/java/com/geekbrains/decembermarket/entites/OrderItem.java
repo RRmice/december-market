@@ -2,7 +2,6 @@ package com.geekbrains.decembermarket.entites;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

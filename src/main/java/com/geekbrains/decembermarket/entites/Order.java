@@ -1,6 +1,8 @@
 package com.geekbrains.decembermarket.entites;
 
-import com.geekbrains.decembermarket.utils.Cart;
+import com.geekbrains.decembermarket.beans.Cart;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Data
+@NoArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +29,18 @@ public class Order {
     @Column(name = "price")
     private BigDecimal price;
 
-    public Order(User user, Cart cart) {
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone_number")
+    private String phone;
+
+    public Order(User user, Cart cart, String address, String phone) {
         this.user = user;
         this.price = cart.getPrice();
         this.items = new ArrayList<>();
+        this.address = address;
+        this.phone = phone;
         for (OrderItem i : cart.getItems()) {
             i.setOrder(this);
             this.items.add(i);
