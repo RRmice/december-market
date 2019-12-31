@@ -20,9 +20,28 @@
     <h5 th:text="'Name: ' + ${user.firstName} + ' ' + ${user.lastName}" />
     <h5 th:text="'Phone: ' + ${user.phone}" />
 
+    <br>
 
+    <div>
+
+        <table class="table table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>Заказ</th>
+                <th>Сумма заказа</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}"/>
+                <td th:text="${order.price}"/>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
+
+
 
 </div>
 

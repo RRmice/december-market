@@ -2,6 +2,7 @@ package com.geekbrains.decembermarket.controllers;
 
 import com.geekbrains.decembermarket.beans.Cart;
 import com.geekbrains.decembermarket.entites.Category;
+import com.geekbrains.decembermarket.entites.Order;
 import com.geekbrains.decembermarket.entites.Product;
 import com.geekbrains.decembermarket.entites.User;
 import com.geekbrains.decembermarket.services.CategoryService;
@@ -17,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +49,11 @@ public class MarketController {
             return "redirect:/";
         }
         User user = userService.findByPhone(principal.getName());
+        List<Order> orders = orderService.getOrdersByUser(user);
+
         model.addAttribute("user", user);
+        model.addAttribute("orders", orders);
+
         return "profile";
     }
 
@@ -81,5 +87,15 @@ public class MarketController {
     public String saveProduct(@ModelAttribute(name = "product") Product product) {
         productService.save(product);
         return "redirect:/";
+    }
+
+    @GetMapping("/registration")
+    public String registration(){
+        return "registration_page";
+    }
+
+    @PostMapping
+    public String userRegistration(@RequestParam HashMap<String, String> params){
+        return "index";
     }
 }
