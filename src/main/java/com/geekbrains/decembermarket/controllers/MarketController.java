@@ -94,8 +94,18 @@ public class MarketController {
         return "registration_page";
     }
 
-    @PostMapping
+    @PostMapping("/registration/user")
     public String userRegistration(@RequestParam HashMap<String, String> params){
-        return "index";
+
+        User newUser = new User();
+        newUser.setPhone("77777");
+        newUser.setEmail("asdasdas");
+        newUser.setPassword("100");
+        newUser.setFirstName("34234234");
+        newUser.setLastName("34234234");
+
+        userService.createNewUser(newUser);
+
+        return  "redirect:/";
     }
 }
