@@ -89,6 +89,14 @@ public class MarketController {
         return "edit_product";
     }
 
+    @GetMapping("/product/{id}")
+    public String openProductPage(Model model, @PathVariable Long id) {
+        Product product = productService.findById(id);
+        model.addAttribute("product", product);
+
+        return "product_page";
+    }
+
     @PostMapping("/edit")
     public String saveProduct(@ModelAttribute(name = "product") Product product) {
         productService.save(product);
