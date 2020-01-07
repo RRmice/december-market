@@ -20,6 +20,7 @@ CREATE TABLE users (
   email                 VARCHAR(50) UNIQUE,
   first_name            VARCHAR(50),
   last_name             VARCHAR(50),
+  confirm               INT DEFAULT 0,
   PRIMARY KEY (id)
 );
 
@@ -45,9 +46,10 @@ INSERT INTO roles (name)
 VALUES
 ('ROLE_CUSTOMER'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
 
-INSERT INTO users (phone, password, first_name, last_name, email)
+INSERT INTO users (phone, password, first_name, last_name, email, confirm)
 VALUES
-('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com');
+('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com', 1),
+('One click user', '000', 'One click user', 'One click user', 'One click user', 1);
 
 INSERT INTO users_roles (user_id, role_id)
 VALUES

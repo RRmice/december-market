@@ -18,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,14 +27,14 @@ public class MarketController {
     private CategoryService categoryService;
     private UserService userService;
     private OrderService orderService;
-    private Cart cart;
 
-    public MarketController(ProductService productService, CategoryService categoryService, UserService userService, OrderService orderService, Cart cart) {
+
+    public MarketController(ProductService productService, CategoryService categoryService,
+                            UserService userService, OrderService orderService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.orderService = orderService;
-        this.cart = cart;
     }
 
     @GetMapping("/login")
@@ -48,8 +47,15 @@ public class MarketController {
         if (principal == null) {
             return "redirect:/";
         }
+
         User user = userService.findByPhone(principal.getName());
-        List<Order> orders = orderService.getOrdersByUser(user);
+        //List<Order> orders = orderService.getOrdersByUser(user);
+        List<Order> orders = orderService.getOrderByPhone(user.getPhone());
+
+
+        if (!userService.isUserConfirm(user)){
+            model.addAttribute("pin", userService.getConfirmKeys(user));
+        }
 
         model.addAttribute("user", user);
         model.addAttribute("orders", orders);
@@ -94,18 +100,17 @@ public class MarketController {
         return "registration_page";
     }
 
+    @PostMapping("/registration/confirm")
+    public String confirmUserRegistration(Principal principal, @RequestParam(name = "pin") String pin){
+
+        User user = userService.findByPhone(principal.getName());
+        userService.confirmUser(user, pin);
+        return  "redirect:/";
+    }
+
     @PostMapping("/registration/user")
-    public String userRegistration(@RequestParam HashMap<String, String> params){
-
-        User newUser = new User();
-        newUser.setPhone("77777");
-        newUser.setEmail("asdasdas");
-        newUser.setPassword("100");
-        newUser.setFirstName("34234234");
-        newUser.setLastName("34234234");
-
-        userService.createNewUser(newUser);
-
+    public String userRegistration(@ModelAttribute(name = "user") User user){
+        userService.createNewUser(user);
         return  "redirect:/";
     }
 }

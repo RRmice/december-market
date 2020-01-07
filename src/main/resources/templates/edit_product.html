@@ -22,7 +22,7 @@
                     <h4 class="card-title mt-2"><span>Изменение товара</span></h4>
                 </header>
                 <article class="card-body">
-                    <form th:action="@{/edit}" th:object="${item}" method="POST">
+                    <form th:action="@{/edit}" th:object="${product}" method="POST">
                         <input th:field="*{id}" type="hidden" class="form-control">
                         <div class="form-row">
                             <div class="col form-group">

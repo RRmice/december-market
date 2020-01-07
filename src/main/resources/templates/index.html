@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="utf-8"/>
@@ -55,8 +55,9 @@
             </td>
             <td th:text="${product.price}"/>
             <td>
-                <a th:href="@{'/edit/' + ${product.id}}" class="btn btn-warning">Edit</a>
-                <a th:href="@{'/cart/add/' + ${product.id}}" class="btn btn-primary">Add to Cart</a>
+                <a sec: th:href="@{'/edit/' + ${product.id}}" class="btn btn-warning">Edit</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{'/cart/add/' + ${product.id}}" class="btn btn-primary">Add to Cart</a>
+                <a sec:authorize="isAnonymous()" th:href="@{'/1click/cart/add/' + ${product.id}}" class="btn btn-primary">Add to 1 Click</a>
             </td>
         </tr>
         </tbody>

@@ -14,8 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.annotation.PostConstruct;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +23,7 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private HashMap<User, String> confirmKeys;
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -37,6 +38,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder){
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    @PostConstruct
+    public void init(){
+        confirmKeys = new HashMap<User, String>();
     }
 
     public User findByPhone(String phone) {
@@ -60,21 +66,57 @@ public class UserService implements UserDetailsService {
 
     public boolean createNewUser(User user){
 
-        if (findByPhone(user.getPhone()) != null){
+        if (isUserExist(user.getPhone())){
             return false;
         }
+
+        setBaseRole(user);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setIsConfirm(0);
+        userRepository.save(user);
+
+        generateKey(user);
+
+        return true;
+
+    }
+
+    private void setBaseRole(User user){
 
         ArrayList<Role> roles = new ArrayList<>();
         roles.add(roleRepository.findOneByName("ROLE_CUSTOMER"));
 
         user.setRoles(roles);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return true;
-
     }
 
     public boolean isUserExist(String phone) {
         return userRepository.existsByPhone(phone);
     }
+
+    public void generateKey(User user) {
+        Random rnd = new Random();
+
+        confirmKeys.put(user,
+               String.format("%04d", rnd.ints(0, 9999).findFirst().getAsInt()));
+
+    }
+
+    public void confirmUser(User user, String pin){
+
+        if (confirmKeys.get(user).equals(pin)){
+            user.setIsConfirm(1);
+            userRepository.save(user);
+        }
+
+    }
+
+    public String getConfirmKeys(User user) {
+        // TODO: 07.01.2020 Заглушка удалить
+        return confirmKeys.get(user);
+    }
+
+    public boolean isUserConfirm(User user){
+        return user.getIsConfirm() > 0;
+    }
+
 }

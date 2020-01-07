@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="utf-8"/>
@@ -40,7 +40,8 @@
         </table>
         <span th:text="#{order.total} + ' ' + ${cart.price}" />
         <br>
-        <a class="btn btn-primary" th:href="@{/orders/info}">Перейти к оформлению заказа</a>
+        <a sec:authorize="isAuthenticated()" class="btn btn-primary" th:href="@{/orders/info}">Перейти к оформлению заказа</a>
+        <a sec:authorize="isAnonymous()" class="btn btn-primary" th:href="@{/1click/order/info}">Перейти к оформлению заказа</a>
     </div>
     <div th:if="${cart.items.size() == 0}">
         <span text="Ваша корзина пуста" />
