@@ -10,6 +10,7 @@ import com.geekbrains.decembermarket.services.OrderService;
 import com.geekbrains.decembermarket.services.ProductService;
 import com.geekbrains.decembermarket.services.UserService;
 import com.geekbrains.decembermarket.utils.ProductFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ public class MarketController {
     private UserService userService;
     private OrderService orderService;
 
-
+    @Autowired
     public MarketController(ProductService productService, CategoryService categoryService,
                             UserService userService, OrderService orderService) {
         this.productService = productService;
@@ -121,4 +122,13 @@ public class MarketController {
         userService.createNewUser(user);
         return  "redirect:/";
     }
+
+    @PostMapping("/product/rating")
+    public String setRating(@RequestParam Map<String, String> params){
+
+        return "redirect:/";
+    }
+
+
+
 }

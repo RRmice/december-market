@@ -35,11 +35,16 @@
 
         <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group mr-2" role="group" aria-label="First group">
-                <button type="button" class="btn btn-secondary">1</button>
-                <button type="button" class="btn btn-secondary">2</button>
-                <button type="button" class="btn btn-secondary">3</button>
-                <button type="button" class="btn btn-secondary">4</button>
-                <button type="button" class="btn btn-secondary">5</button>
+
+                <form th:action="@{/product/rating}" th:method="POST">
+
+                <button type="submit"  value="1" class="btn btn-secondary">1</button>
+                <button type="submit"  value="2" class="btn btn-secondary">2</button>
+                <button type="submit"  value="3" class="btn btn-secondary">3</button>
+                <button type="submit"  value="4" class="btn btn-secondary">4</button>
+                <button type="submit"  value="5" class="btn btn-secondary">5</button>
+
+                </form>
 
             </div>
 

@@ -63,7 +63,7 @@ create table orders (id bigserial, user_id bigint, price numeric(8, 2) not null,
 drop table if exists orders_items cascade;
 create table orders_items (id bigserial, order_id bigint, product_id bigint, quantity int, price numeric(8, 2), primary key(id), constraint fk_prod_id foreign key (product_id) references products (id), constraint fk_order_id foreign key (order_id) references orders (id));
 
-DROP TABLE if EXISTS orders CASCADE;
+DROP TABLE IF EXISTS product_rating cascade;
 CREATE TABLE product_rating(
   id bigserial,
   user_id INT NOT NULL,

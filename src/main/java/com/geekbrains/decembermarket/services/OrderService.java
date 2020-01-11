@@ -21,9 +21,9 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-//    public List<Order> getOrdersByUser(User user){
-//        return orderRepository.findByUser(user);
-//    }
+    public List<Order> getOrdersByUser(User user){
+        return orderRepository.findByUser(user);
+    }
 
     public List<Order> getOrderByPhone(String phone){
         return orderRepository.findByPhone(phone);
