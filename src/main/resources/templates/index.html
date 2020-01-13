@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8"/>
@@ -47,16 +47,21 @@
         </thead>
         <tbody>
         <tr th:each="product : ${page.content}">
+
             <td th:text="${product.id}"/>
             <td>
+            <a th:href="@{'/product/' + ${product.id}}">
                 <span style="font-weight: bold" th:text="${product.title}"/>
                 <br>
                 <span th:text="${product.description}"/>
+            </a>
             </td>
             <td th:text="${product.price}"/>
             <td>
                 <a th:href="@{'/edit/' + ${product.id}}" class="btn btn-warning">Edit</a>
-                <a th:href="@{'/cart/add/' + ${product.id}}" class="btn btn-primary">Add to Cart</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{'/cart/add/' + ${product.id}}" class="btn btn-primary">Add to Cart</a>
+                <a sec:authorize="isAnonymous()" th:href="@{'/1click/cart/add/' + ${product.id}}" class="btn btn-primary">Add to 1 Click</a>
+
             </td>
         </tr>
         </tbody>

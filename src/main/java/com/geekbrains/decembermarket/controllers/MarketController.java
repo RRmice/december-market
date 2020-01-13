@@ -2,6 +2,7 @@ package com.geekbrains.decembermarket.controllers;
 
 import com.geekbrains.decembermarket.beans.Cart;
 import com.geekbrains.decembermarket.entites.Category;
+import com.geekbrains.decembermarket.entites.Order;
 import com.geekbrains.decembermarket.entites.Product;
 import com.geekbrains.decembermarket.entites.User;
 import com.geekbrains.decembermarket.services.CategoryService;
@@ -9,6 +10,7 @@ import com.geekbrains.decembermarket.services.OrderService;
 import com.geekbrains.decembermarket.services.ProductService;
 import com.geekbrains.decembermarket.services.UserService;
 import com.geekbrains.decembermarket.utils.ProductFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,14 +28,14 @@ public class MarketController {
     private CategoryService categoryService;
     private UserService userService;
     private OrderService orderService;
-    private Cart cart;
 
-    public MarketController(ProductService productService, CategoryService categoryService, UserService userService, OrderService orderService, Cart cart) {
+    @Autowired
+    public MarketController(ProductService productService, CategoryService categoryService,
+                            UserService userService, OrderService orderService) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.orderService = orderService;
-        this.cart = cart;
     }
 
     @GetMapping("/login")
@@ -46,8 +48,19 @@ public class MarketController {
         if (principal == null) {
             return "redirect:/";
         }
+
         User user = userService.findByPhone(principal.getName());
+        //List<Order> orders = orderService.getOrdersByUser(user);
+        List<Order> orders = orderService.getOrderByPhone(user.getPhone());
+
+
+        if (!userService.isUserConfirm(user)){
+            model.addAttribute("pin", userService.getConfirmKeys(user));
+        }
+
         model.addAttribute("user", user);
+        model.addAttribute("orders", orders);
+
         return "profile";
     }
 
@@ -77,9 +90,45 @@ public class MarketController {
         return "edit_product";
     }
 
+    @GetMapping("/product/{id}")
+    public String openProductPage(Model model, @PathVariable Long id) {
+        Product product = productService.findById(id);
+        model.addAttribute("product", product);
+
+        return "product_page";
+    }
+
     @PostMapping("/edit")
     public String saveProduct(@ModelAttribute(name = "product") Product product) {
         productService.save(product);
         return "redirect:/";
     }
+
+    @GetMapping("/registration")
+    public String registration(){
+        return "registration_page";
+    }
+
+    @PostMapping("/registration/confirm")
+    public String confirmUserRegistration(Principal principal, @RequestParam(name = "pin") String pin){
+
+        User user = userService.findByPhone(principal.getName());
+        userService.confirmUser(user, pin);
+        return  "redirect:/";
+    }
+
+    @PostMapping("/registration/user")
+    public String userRegistration(@ModelAttribute(name = "user") User user){
+        userService.createNewUser(user);
+        return  "redirect:/";
+    }
+
+    @PostMapping("/product/rating")
+    public String setRating(@RequestParam Map<String, String> params){
+
+        return "redirect:/";
+    }
+
+
+
 }
