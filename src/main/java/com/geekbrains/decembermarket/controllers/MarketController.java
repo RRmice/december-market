@@ -9,9 +9,8 @@ import com.geekbrains.decembermarket.services.OrderService;
 import com.geekbrains.decembermarket.services.ProductService;
 import com.geekbrains.decembermarket.services.UserService;
 import com.geekbrains.decembermarket.utils.ProductFilter;
-import org.apache.tomcat.util.json.JSONParser;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +19,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -73,7 +69,7 @@ public class MarketController {
 
     @GetMapping("/")
     public String index(Model model, @RequestParam Map<String, String> params,
-                        @CookieValue(value = "last_products", required = false) String last_products) {
+                        @CookieValue(value = "last_product", required = false) String lastProducts) {
 
         int pageIndex = 0;
         if (params.containsKey("p")) {
@@ -88,7 +84,8 @@ public class MarketController {
         model.addAttribute("categories", categories);
         model.addAttribute("page", page);
 
-        System.out.println("Cookie last_products" + (last_products == null ? " is empty": last_products));
+        model.addAttribute("lastProductsDeque", getLastProducts(lastProducts));
+
         return "index";
     }
 
@@ -103,24 +100,66 @@ public class MarketController {
 
     @GetMapping("/product/{id}")
     public String openProductPage(Model model, @PathVariable Long id,
-         //                         @CookieValue(value = "last_products", defaultValue = "") String last_products ,
-                                  @CookieValue(name = "last_products", defaultValue = "", required = false) String last_products,
+                                  @CookieValue(name = "last_product", defaultValue = "") String last_products,
                                   HttpServletResponse response) {
+
         Product product = productService.findById(id);
         model.addAttribute("product", product);
 
-        if (!last_products.isEmpty()){
-            System.out.println("old last_product " + last_products);
-        }
 
-       last_products = String.valueOf(id);
-        Session.Cookie sc = new Session.Cookie();
-        sc.setName("foo");
-        sc.setSecure(false);
-        response.addCookie(new Cookie("last_products", last_products));
+        updateGsonLastProduct(response, last_products, id);
 
 
         return "product_page";
+    }
+
+    private ArrayDeque<Long> getLastProducts(String last_products) {
+
+        ArrayDeque<Long> lists;
+        Gson gson = new Gson();
+
+        if (last_products.isEmpty()){
+            lists = new ArrayDeque<>(5);
+        } else {
+            last_products = last_products.replace(':', ',');
+            lists = (ArrayDeque<Long>) gson.fromJson(last_products, ArrayDeque.class);
+        }
+
+        return lists;
+
+    }
+
+    private void updateGsonLastProduct(HttpServletResponse response, String last_products, Long id) {
+
+         ArrayDeque<Long> lists;
+         Gson gson = new Gson();
+
+         if (last_products.isEmpty()){
+             lists = new ArrayDeque<>(5);
+         } else {
+             last_products = last_products.replace(':', ',');
+             lists = (ArrayDeque<Long>) gson.fromJson(last_products, ArrayDeque.class);
+         }
+
+
+         if (lists.size() >= 5) {
+             lists.removeLast();
+         }
+
+         lists.add(id);
+
+         String value = gson.toJson(lists);
+         // Данный костыль нужен т.к. куки не позволяют хранить 44 символ (,) в себе
+         value = value.replace(',', ':');
+
+        Cookie rc = new Cookie("last_product", value);
+        rc.setPath("/");
+
+        Cookie tc = new Cookie("last_product", value);
+
+        response.addCookie(tc);
+        response.addCookie(rc);
+
     }
 
     @PostMapping("/edit")
