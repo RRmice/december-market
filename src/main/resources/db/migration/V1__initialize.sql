@@ -10,6 +10,9 @@ insert into products
 (title, category_id, description, price) values
 ('Milk', 1, 'Fresh Milk', 80.0),
 ('Bread', 1, 'Fresh Bread', 30.0),
+('Meat', 1, 'Fresh Meat', 200.0),
+('Chocolate', 1, 'FChocolate', 70.0),
+('Juice', 1, 'Fresh Juice', 50.0),
 ('NoteBook ASUS X1000', 2, 'Model: ASUS X1000, CPU: Xeon N700, RAM: 128 Gb, SSD: 1Tb', 25000.0);
 
 DROP TABLE IF EXISTS users;
