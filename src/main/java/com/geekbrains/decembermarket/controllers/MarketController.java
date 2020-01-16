@@ -118,7 +118,7 @@ public class MarketController {
         ArrayDeque<Long> lists;
         Gson gson = new Gson();
 
-        if (last_products.isEmpty()){
+        if (last_products == null || last_products.isEmpty()){
             lists = new ArrayDeque<>(5);
         } else {
             last_products = last_products.replace(':', ',');
@@ -131,19 +131,11 @@ public class MarketController {
 
     private void updateGsonLastProduct(HttpServletResponse response, String last_products, Long id) {
 
-         ArrayDeque<Long> lists;
-         Gson gson = new Gson();
-
-         if (last_products.isEmpty()){
-             lists = new ArrayDeque<>(5);
-         } else {
-             last_products = last_products.replace(':', ',');
-             lists = (ArrayDeque<Long>) gson.fromJson(last_products, ArrayDeque.class);
-         }
-
+        Gson gson = new Gson();
+        ArrayDeque<Long> lists = getLastProducts(last_products);
 
          if (lists.size() >= 5) {
-             lists.removeLast();
+             lists.removeFirst();
          }
 
          lists.add(id);
