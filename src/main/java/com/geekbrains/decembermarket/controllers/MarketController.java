@@ -1,6 +1,5 @@
 package com.geekbrains.decembermarket.controllers;
 
-import com.geekbrains.decembermarket.beans.Cart;
 import com.geekbrains.decembermarket.entites.Category;
 import com.geekbrains.decembermarket.entites.Order;
 import com.geekbrains.decembermarket.entites.Product;
@@ -10,6 +9,7 @@ import com.geekbrains.decembermarket.services.OrderService;
 import com.geekbrains.decembermarket.services.ProductService;
 import com.geekbrains.decembermarket.services.UserService;
 import com.geekbrains.decembermarket.utils.ProductFilter;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,9 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 @Controller
 public class MarketController {
@@ -37,6 +39,7 @@ public class MarketController {
         this.userService = userService;
         this.orderService = orderService;
     }
+
 
     @GetMapping("/login")
     public String loginPage() {
@@ -65,7 +68,9 @@ public class MarketController {
     }
 
     @GetMapping("/")
-    public String index(Model model, @RequestParam Map<String, String> params) {
+    public String index(Model model, @RequestParam Map<String, String> params,
+                        @CookieValue(value = "last_product", required = false) String lastProducts) {
+
         int pageIndex = 0;
         if (params.containsKey("p")) {
             pageIndex = Integer.parseInt(params.get("p")) - 1;
@@ -78,6 +83,9 @@ public class MarketController {
         model.addAttribute("filtersDef", productFilter.getFilterDefinition());
         model.addAttribute("categories", categories);
         model.addAttribute("page", page);
+
+        model.addAttribute("lastProductsDeque", getLastProducts(lastProducts));
+
         return "index";
     }
 
@@ -91,11 +99,59 @@ public class MarketController {
     }
 
     @GetMapping("/product/{id}")
-    public String openProductPage(Model model, @PathVariable Long id) {
+    public String openProductPage(Model model, @PathVariable Long id,
+                                  @CookieValue(name = "last_product", defaultValue = "") String last_products,
+                                  HttpServletResponse response) {
+
         Product product = productService.findById(id);
         model.addAttribute("product", product);
 
+
+        updateGsonLastProduct(response, last_products, id);
+
+
         return "product_page";
+    }
+
+    private ArrayDeque<Long> getLastProducts(String last_products) {
+
+        ArrayDeque<Long> lists;
+        Gson gson = new Gson();
+
+        if (last_products == null || last_products.isEmpty()){
+            lists = new ArrayDeque<>(5);
+        } else {
+            last_products = last_products.replace(':', ',');
+            lists = (ArrayDeque<Long>) gson.fromJson(last_products, ArrayDeque.class);
+        }
+
+        return lists;
+
+    }
+
+    private void updateGsonLastProduct(HttpServletResponse response, String last_products, Long id) {
+
+        Gson gson = new Gson();
+        ArrayDeque<Long> lists = getLastProducts(last_products);
+
+         if (lists.size() >= 5) {
+             lists.removeFirst();
+         }
+
+         lists.add(id);
+
+         String value = gson.toJson(lists);
+         // Данный костыль нужен т.к. куки не позволяют хранить 44 символ (,) в себе
+         value = value.replace(',', ':');
+
+        Cookie rc = new Cookie("last_product", value);
+        rc.setPath("/");
+
+        Cookie tc = new Cookie("last_product", value);
+
+        response.addCookie(tc);
+        response.addCookie(rc);
+
     }
 
     @PostMapping("/edit")

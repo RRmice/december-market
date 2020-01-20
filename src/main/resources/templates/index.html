@@ -83,6 +83,15 @@
             </li>
         </ul>
     </nav>
+
+    <div th:each="Long : ${lastProductsDeque}" >
+
+        <a th:href="@{'/product/' + ${Long}}" th:text="product + ${Long}" ></a>
+
+    </div>
+
+    <!--<div th:replace="~{footer :: navigation(Home)}" />-->
+
 </div>
 
 </body>
