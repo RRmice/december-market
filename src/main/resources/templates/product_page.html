@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8"/>
-
-    <title>Работа с товарами</title>
-
+    <title>Заготовка магазина</title>
+    <link rel="stylesheet" th:href="@{../static/css/stylesheet.css}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -15,45 +13,33 @@
 <body>
 
 <div class="container">
+    <div th:replace="~{navigation :: navigation(Shop)}"/>
 
-    <div th:replace="~{navigation :: navigation(Home)}" />
+    <h1>Информация о товаре</h1>
 
-    <h4 class="card-title mt-2"><span>Страница товара</span></h4>
+    <h5 th:text="'Title: ' + ${product.title}"/>
+    <h5 th:text="'Category: ' + ${product.category.title}"/>
 
-    <div th:object="${product}">
-
-        <h5 th:text="*{title}" />
-        <h5 th:text="*{description}" />
-
-    </div>
+    <form th:action="@{'/products/' + ${product.id} + '/review'}" method="POST" th:if="${allowed}">
+        <h4>Оставить отзыв</h4>
+        <div class="input-group">
+            <select name="value">
+                <option value="1">Оценка: 1</option>
+                <option value="2">Оценка: 2</option>
+                <option value="3">Оценка: 3</option>
+                <option value="4">Оценка: 4</option>
+                <option value="5">Оценка: 5</option>
+            </select>
+            <textarea class="form-control" name="content"></textarea>
+        </div>
+        <br>
+        <button type="submit" th:text="'Добавить отзыв'" class="btn btn-warning"></button>
+    </form>
 
     <br>
-
-    <div sec:authorize="isAuthenticated()">
-
-        <h6>Оставить оценку</h6>
-
-        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-            <div class="btn-group mr-2" role="group" aria-label="First group">
-
-                <form th:action="@{/product/rating}" th:method="POST">
-
-                <button type="submit"  value="1" class="btn btn-secondary">1</button>
-                <button type="submit"  value="2" class="btn btn-secondary">2</button>
-                <button type="submit"  value="3" class="btn btn-secondary">3</button>
-                <button type="submit"  value="4" class="btn btn-secondary">4</button>
-                <button type="submit"  value="5" class="btn btn-secondary">5</button>
-
-                </form>
-
-            </div>
-
-        </div>
-    </div>
-
-
-
-
+    <h3>Отзывы</h3>
+    <span th:each="r : ${product.reviews}" th:text="${r.user.getFullName() + ' ' + r.content + '     Оценка: ' + r.value}"/>
 </div>
+
 </body>
 </html>

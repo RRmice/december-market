@@ -23,7 +23,6 @@ CREATE TABLE users (
   email                 VARCHAR(50) UNIQUE,
   first_name            VARCHAR(50),
   last_name             VARCHAR(50),
-  confirm               INT DEFAULT 0,
   PRIMARY KEY (id)
 );
 
@@ -49,10 +48,10 @@ INSERT INTO roles (name)
 VALUES
 ('ROLE_CUSTOMER'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
 
-INSERT INTO users (phone, password, first_name, last_name, email, confirm)
+INSERT INTO users (phone, password, first_name, last_name, email)
 VALUES
-('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com', 1),
-('One click user', '000', 'One click user', 'One click user', 'One click user', 1);
+('anonymous','1','Anonymous','Anonymous','shop@shop.com'),
+('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com');
 
 INSERT INTO users_roles (user_id, role_id)
 VALUES
@@ -66,16 +65,5 @@ create table orders (id bigserial, user_id bigint, price numeric(8, 2) not null,
 drop table if exists orders_items cascade;
 create table orders_items (id bigserial, order_id bigint, product_id bigint, quantity int, price numeric(8, 2), primary key(id), constraint fk_prod_id foreign key (product_id) references products (id), constraint fk_order_id foreign key (order_id) references orders (id));
 
-DROP TABLE IF EXISTS product_rating cascade;
-CREATE TABLE product_rating(
-  id bigserial,
-  user_id INT NOT NULL,
-  product_id INT NOT NULL,
-  rating INT NOT NULL,
-  FOREIGN KEY (user_id)
-  REFERENCES users (id),
-  FOREIGN KEY (product_id)
-  REFERENCES products (id)
-  )
-
-
+drop table if exists reviews cascade;
+create table reviews (id bigserial, user_id bigint, product_id bigint, content varchar(5000), value int, primary key(id), foreign key (product_id) references products (id), foreign key (user_id) references users (id));

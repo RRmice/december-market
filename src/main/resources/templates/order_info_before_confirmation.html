@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8"/>
@@ -36,18 +36,11 @@
     <span th:text="'Общая стоимость: ' + ${cart.price}"/>
     <br>
 
-    <form sec:authorize="isAuthenticated()" th:action="@{/orders/create}" method="POST">
+    <form th:action="@{/orders/create}" method="POST">
         <input name="address" type="text" class="form-control" placeholder="Адрес доставки">
-        <input name="phone_number" th:value="${def_phone}" type="text" class="form-control" placeholder="Номер телефона">
+        <input name="phone_number" th:value="${def_phone != null ? def_phone : null}" type="text" class="form-control" placeholder="Номер телефона">
         <button class="btn btn-primary" type="submit">Оформить заказ</button>
     </form>
-
-    <form sec:authorize="isAnonymous()" th:action="@{/1click/orders/create}" method="POST">
-        <input name="address" type="text" class="form-control" placeholder="Адрес доставки">
-        <input name="phone_number" th:value="${def_phone}" type="text" class="form-control" placeholder="Номер телефона">
-        <button class="btn btn-primary" type="submit">Оформить заказ</button>
-    </form>
-
 
 <!--    <a class="btn btn-primary" th:href="@{/orders/create}">Оформить заказ</a>-->
 </div>

@@ -47,11 +47,4 @@ public class Order {
         }
         cart.clear();
     }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                '}';
-    }
 }
