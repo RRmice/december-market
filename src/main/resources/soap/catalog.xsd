@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://www.septembermarket.geekbrains.com/soap/catalog"
+           targetNamespace="http://www.septembermarket.geekbrains.com/soap/catalog"
+           elementFormDefault="qualified">
+
+    <xs:complexType name="productDto">
+        <xs:sequence>
+            <xs:element name="title" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="productsList">
+        <xs:sequence>
+            <xs:element name="product" type="tns:productDto" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>
