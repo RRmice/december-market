@@ -28,7 +28,7 @@ public class SoapConfig extends WsConfigurerAdapter {
         DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
         wsdl11Definition.setPortTypeName("CatalogPort");
         wsdl11Definition.setLocationUri("/ws");
-        wsdl11Definition.setTargetNamespace("http://www.decembermarket.geekbrains.com/soap/catalog");
+        wsdl11Definition.setTargetNamespace("http://www.septembermarket.geekbrains.com/soap/catalog");
         wsdl11Definition.setSchema(catalogXsdSchema);
         return wsdl11Definition;
     }

@@ -1,7 +1,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:tns="http://www.decembermarket.geekbrains.com/soap/catalog"
-           targetNamespace="http://www.decembermarket.geekbrains.com/soap/catalog"
-           elementFormDefault="qualified">
+        targetNamespace="http://www.decembermarket.geekbrains.com/soap/catalog"
+        elementFormDefault="qualified">
 
     <xs:element name="getProductsListRequest">
         <xs:complexType>

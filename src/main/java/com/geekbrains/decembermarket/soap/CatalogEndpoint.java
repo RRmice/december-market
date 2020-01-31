@@ -1,5 +1,6 @@
 package com.geekbrains.decembermarket.soap;
 
+import com.geekbrains.decembermarket.soap.SoapCatalogService;
 import com.geekbrains.decembermarket.soap.catalog.GetProductsListRequest;
 import com.geekbrains.decembermarket.soap.catalog.GetProductsListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @Endpoint
 public class CatalogEndpoint {
-    private static final String CATALOG_NAMESPACE_URI = "http://www.decembermarket.geekbrains.com/soap/catalog";
+    private static final String CATALOG_NAMESPACE_URI = "http://www.septembermarket.geekbrains.com/soap/catalog";
 
     private SoapCatalogService soapCatalogService;
 
