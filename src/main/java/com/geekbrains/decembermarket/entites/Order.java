@@ -35,6 +35,9 @@ public class Order {
     @Column(name = "phone_number")
     private String phone;
 
+    @Column(name = "confirm_order")
+    private Boolean confirmed;
+
     public Order(User user, Cart cart, String address, String phone) {
         this.user = user;
         this.price = cart.getPrice();
