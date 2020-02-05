@@ -5,6 +5,8 @@ import com.geekbrains.decembermarket.entites.Order;
 import com.geekbrains.decembermarket.entites.User;
 import com.geekbrains.decembermarket.services.OrderService;
 import com.geekbrains.decembermarket.services.UserService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,13 @@ public class OrderController {
     private UserService userService;
     private OrderService orderService;
     private Cart cart;
+
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private void setRabbitTemplate(RabbitTemplate rabbitTemplate){
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public OrderController(UserService userService, OrderService orderService, Cart cart) {
         this.userService = userService;
@@ -47,6 +56,9 @@ public class OrderController {
         }
         Order order = new Order(user, cart, address, phone);
         order = orderService.save(order);
+
+
+
         model.addAttribute("order_id_str", String.format("%05d", order.getId()));
         return "order_confirmation";
     }

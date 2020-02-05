@@ -1,7 +1,9 @@
 package com.geekbrains.decembermarket;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class DecemberMarketApplication {
@@ -31,6 +33,13 @@ public class DecemberMarketApplication {
 	// 14. Смс сервис
 	// 15. Восстановление пароля
 	// 16. Формирование PDF для заказа
+
+	static final String orderConfirmQueue = "order-confirm-queue";
+
+	@Bean
+	Queue orderConfirmQueue() {
+		return new Queue(orderConfirmQueue, false);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(DecemberMarketApplication.class, args);
