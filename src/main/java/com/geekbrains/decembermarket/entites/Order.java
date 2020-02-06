@@ -50,4 +50,8 @@ public class Order {
         }
         cart.clear();
     }
+
+    public Long getId(){
+        return id;
+    }
 }

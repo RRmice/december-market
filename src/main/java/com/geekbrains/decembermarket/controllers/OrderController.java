@@ -57,8 +57,6 @@ public class OrderController {
         Order order = new Order(user, cart, address, phone);
         order = orderService.save(order);
 
-
-
         model.addAttribute("order_id_str", String.format("%05d", order.getId()));
         return "order_confirmation";
     }
