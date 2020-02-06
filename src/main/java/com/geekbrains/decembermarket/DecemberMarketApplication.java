@@ -1,6 +1,10 @@
 package com.geekbrains.decembermarket;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -35,10 +39,21 @@ public class DecemberMarketApplication {
 	// 16. Формирование PDF для заказа
 
 	static final String orderConfirmQueue = "order-confirm-queue";
+	static final String OrderConfirmExchange = "order-exchange";
 
 	@Bean
 	Queue orderConfirmQueue() {
 		return new Queue(orderConfirmQueue, false);
+	}
+
+	@Bean
+	TopicExchange orderExchange() {
+		return new TopicExchange(OrderConfirmExchange);
+	}
+
+	@Bean
+	Binding bindingTopic(@Qualifier("orderConfirmQueue") Queue queue, TopicExchange orderExchange) {
+		return BindingBuilder.bind(queue).to(orderExchange).with("order.confirm");
 	}
 
 	public static void main(String[] args) {
