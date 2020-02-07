@@ -1,5 +1,6 @@
 package com.geekbrains.decembermarket.controllers;
 
+import com.geekbrains.decembermarket.DecemberMarketApplication;
 import com.geekbrains.decembermarket.beans.Cart;
 import com.geekbrains.decembermarket.entites.Order;
 import com.geekbrains.decembermarket.entites.User;
@@ -56,6 +57,8 @@ public class OrderController {
         }
         Order order = new Order(user, cart, address, phone);
         order = orderService.save(order);
+
+        rabbitTemplate.convertAndSend(DecemberMarketApplication.orderConfirmExchange, "order.confirm", order.getId());
 
         model.addAttribute("order_id_str", String.format("%05d", order.getId()));
         return "order_confirmation";

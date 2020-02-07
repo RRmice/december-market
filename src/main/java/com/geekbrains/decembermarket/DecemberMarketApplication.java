@@ -38,8 +38,8 @@ public class DecemberMarketApplication {
 	// 15. Восстановление пароля
 	// 16. Формирование PDF для заказа
 
-	static final String orderConfirmQueue = "order-confirm-queue";
-	static final String OrderConfirmExchange = "order-exchange";
+	public static final String orderConfirmQueue = "order-confirm-queue";
+	public static final String orderConfirmExchange = "order-exchange";
 
 	@Bean
 	Queue orderConfirmQueue() {
@@ -48,7 +48,7 @@ public class DecemberMarketApplication {
 
 	@Bean
 	TopicExchange orderExchange() {
-		return new TopicExchange(OrderConfirmExchange);
+		return new TopicExchange(orderConfirmExchange);
 	}
 
 	@Bean
