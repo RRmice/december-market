@@ -36,7 +36,7 @@ public class Order {
     private String phone;
 
     @Column(name = "confirm_order")
-    private Boolean confirmed;
+    private int confirmed;
 
     public Order(User user, Cart cart, String address, String phone) {
         this.user = user;
@@ -48,10 +48,18 @@ public class Order {
             i.setOrder(this);
             this.items.add(i);
         }
+
+        this.confirmed = 0;
+
         cart.clear();
     }
 
     public Long getId(){
         return id;
     }
+
+    public void setConfirmed(int confirmed) {
+        this.confirmed = confirmed;
+    }
+
 }

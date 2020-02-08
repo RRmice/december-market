@@ -1,9 +1,13 @@
 package com.geekbrains.decembermarket;
 
+import com.geekbrains.decembermarket.beans.OrderListener;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -39,6 +43,7 @@ public class DecemberMarketApplication {
 	// 16. Формирование PDF для заказа
 
 	public static final String orderConfirmQueue = "order-confirm-queue";
+	public static final String orderConfirmed = "order-confirmed-queue";
 	public static final String orderConfirmExchange = "order-exchange";
 
 	@Bean
@@ -47,13 +52,38 @@ public class DecemberMarketApplication {
 	}
 
 	@Bean
+	Queue orderConfirmedQueue() {
+		return new Queue(orderConfirmed, false);
+	}
+
+	@Bean
 	TopicExchange orderExchange() {
 		return new TopicExchange(orderConfirmExchange);
 	}
 
 	@Bean
-	Binding bindingTopic(@Qualifier("orderConfirmQueue") Queue queue, TopicExchange orderExchange) {
+	Binding bindingTopicOut(@Qualifier("orderConfirmQueue") Queue queue, TopicExchange orderExchange) {
 		return BindingBuilder.bind(queue).to(orderExchange).with("order.confirm");
+	}
+
+	@Bean
+	Binding bindingTopicIn(@Qualifier("orderConfirmedQueue") Queue queue, TopicExchange orderExchange) {
+		return BindingBuilder.bind(queue).to(orderExchange).with("order.confirmed");
+	}
+
+
+	@Bean
+	SimpleMessageListenerContainer containerForTopic(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
+		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory);
+		container.setQueueNames("order-confirmed-queue");
+		container.setMessageListener(listenerAdapter);
+		return container;
+	}
+
+	@Bean
+	MessageListenerAdapter listenerAdapter(OrderListener orderListener) {
+		return new MessageListenerAdapter(orderListener, "receiveMessage");
 	}
 
 	public static void main(String[] args) {

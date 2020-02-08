@@ -19,4 +19,11 @@ public class OrderService {
     }
 
 
+    public void confirmOrder(Long id) {
+
+        Order order = orderRepository.getOne(id);
+        order.setConfirmed(1);
+        save(order);
+
+    }
 }
