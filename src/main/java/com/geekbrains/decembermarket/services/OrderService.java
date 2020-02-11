@@ -17,4 +17,13 @@ public class OrderService {
     public Order save(Order order) {
         return orderRepository.save(order);
     }
+
+
+    public void confirmOrder(Long id) {
+
+        Order order = orderRepository.getOne(id);
+        order.setConfirmed(1);
+        save(order);
+
+    }
 }

@@ -1,16 +1,16 @@
 package com.geekbrains.decembermarket.controllers;
 
+import com.geekbrains.decembermarket.DecemberMarketApplication;
 import com.geekbrains.decembermarket.beans.Cart;
 import com.geekbrains.decembermarket.entites.Order;
 import com.geekbrains.decembermarket.entites.User;
 import com.geekbrains.decembermarket.services.OrderService;
 import com.geekbrains.decembermarket.services.UserService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -20,6 +20,13 @@ public class OrderController {
     private UserService userService;
     private OrderService orderService;
     private Cart cart;
+
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private void setRabbitTemplate(RabbitTemplate rabbitTemplate){
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public OrderController(UserService userService, OrderService orderService, Cart cart) {
         this.userService = userService;
@@ -47,6 +54,9 @@ public class OrderController {
         }
         Order order = new Order(user, cart, address, phone);
         order = orderService.save(order);
+
+        rabbitTemplate.convertAndSend(DecemberMarketApplication.orderConfirmExchange, "order.confirm", order.getId());
+
         model.addAttribute("order_id_str", String.format("%05d", order.getId()));
         return "order_confirmation";
     }
@@ -57,5 +67,12 @@ public class OrderController {
         model.addAttribute("username", user.getFullName());
         model.addAttribute("orders", user.getOrders());
         return "orders_history";
+    }
+
+    @PostMapping("/confirm/{id}")
+    public void confirmOrder(@PathVariable Long id){
+
+        orderService.confirmOrder(id);
+
     }
 }
