@@ -14,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -105,4 +102,22 @@ public class MarketController {
         response.addCookie(c);
         return "reset ok";
     }
+
+    @PostMapping("/registration/confirm")
+    public String confirmUserRegistration(Principal principal, @RequestParam(name = "pin") String pin){
+
+
+
+        User user = userService.findByPhone(principal.getName());
+        userService.confirmUser(user, pin);
+        return  "redirect:/";
+
+    }
+
+    @PostMapping("/registration/")
+    public String UserRegistration(){
+
+        return "/registration_page";
+    }
+
 }

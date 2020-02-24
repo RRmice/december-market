@@ -23,6 +23,7 @@ CREATE TABLE users (
   email                 VARCHAR(50) UNIQUE,
   first_name            VARCHAR(50),
   last_name             VARCHAR(50),
+  is_confirm               INT NOT NULL DEFAULT 0,
   PRIMARY KEY (id)
 );
 
